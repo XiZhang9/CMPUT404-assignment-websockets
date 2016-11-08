@@ -27,8 +27,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# pip install ws4py
-# pip install gevent
+#pip install ws4py
+#pip install gevent
 
 from gevent import monkey
 monkey.patch_all()
