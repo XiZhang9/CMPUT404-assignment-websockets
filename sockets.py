@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 # Copyright (c) 2013-2014 Abram Hindle
+# Modify: Han Wang, Xi Zhang
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -66,12 +68,6 @@ Reference: https://github.com/abramhindle/WebSocketsExamples/blob/master/chat.py
 '''
 clients = list()
 
-def send_all(msg):
-    for client in clients:
-        client.put( msg )
-
-def send_all_json(obj):
-    send_all( json.dumps(obj) )
 
 class Client:
     def __init__(self):
@@ -86,8 +82,13 @@ class Client:
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
-    #myWorld.update_listeners(entity)
-#myWorld.add_set_listener( set_listener )
+    newdata={}
+    newdata[entity]=data
+    listen=json.dumps(newdata)
+    for item in clients:
+        item.put(listen)
+    
+myWorld.add_set_listener( set_listener )
         
 @app.route('/')
 def hello():
@@ -103,10 +104,11 @@ def read_ws(ws,client):
     try:
         while True:
             msg = ws.receive()
-            print "WS RECV: %s" % msg
             if (msg):
                 packet = json.loads(msg)
-                send_all_json( packet )
+                #send_all_json( packet )
+                for data in packet:
+                    myWorld.set(data,packet[data])
             else:
                 break
     except:
